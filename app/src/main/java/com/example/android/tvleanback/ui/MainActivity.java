@@ -16,6 +16,7 @@
 
 package com.example.android.tvleanback.ui;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -36,5 +37,21 @@ public class MainActivity extends LeanbackActivity {
             // This is the first time running the app, let's go to onboarding
             startActivity(new Intent(this, OnboardingActivity.class));
         }
+        addBrowseFragment();
     }
+
+    private void addBrowseFragment() {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        MainFragment fragment = MainFragment.newInstance();
+        fragmentTransaction.replace(R.id.main_frame, fragment, "MainFragment");
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.addToBackStack("MainFragment");
+        // Commit the transaction
+        try {
+            fragmentTransaction.commitAllowingStateLoss();
+        }catch (IllegalStateException iex){
+            //Catch
+        }
+    }
+
 }

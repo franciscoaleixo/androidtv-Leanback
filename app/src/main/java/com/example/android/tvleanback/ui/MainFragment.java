@@ -16,6 +16,7 @@
 
 package com.example.android.tvleanback.ui;
 
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -81,6 +82,10 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
 
     // Maps a Loader Id to its CursorObjectAdapter.
     private Map<Integer, CursorObjectAdapter> mVideoCursorAdapters;
+
+    public static MainFragment newInstance() {
+        return new MainFragment();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -333,14 +338,27 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
 
             if (item instanceof Video) {
                 Video video = (Video) item;
-                Intent intent = new Intent(getActivity(), VideoDetailsActivity.class);
-                intent.putExtra(VideoDetailsActivity.VIDEO, video);
+//                Intent intent = new Intent(getActivity(), VideoDetailsActivity.class);
+//                intent.putExtra(VideoDetailsActivity.VIDEO, video);
+//
+//                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                        getActivity(),
+//                        ((ImageCardView) itemViewHolder.view).getMainImageView(),
+//                        VideoDetailsActivity.SHARED_ELEMENT_NAME).toBundle();
+//                getActivity().startActivity(intent, bundle);
 
-                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((ImageCardView) itemViewHolder.view).getMainImageView(),
-                        VideoDetailsActivity.SHARED_ELEMENT_NAME).toBundle();
-                getActivity().startActivity(intent, bundle);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_frame, VideoDetailsFragment.newInstance(video));
+                transaction.addToBackStack("VideoDetailsFragment");
+                // Commit the transaction
+                try {
+                    transaction.commit();
+                }catch (IllegalStateException ex){
+                    try {
+                        transaction.commitAllowingStateLoss();
+                    }catch (IllegalStateException iex){
+                    }
+                }
             } else if (item instanceof String) {
                 if (((String) item).contains(getString(R.string.grid_view))) {
                     Intent intent = new Intent(getActivity(), VerticalGridActivity.class);

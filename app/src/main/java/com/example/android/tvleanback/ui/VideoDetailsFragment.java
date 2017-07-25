@@ -78,6 +78,8 @@ public class VideoDetailsFragment extends DetailsFragment
     private static final int ACTION_RENT = 2;
     private static final int ACTION_BUY = 3;
 
+    private static final String ARG_VIDEO = "video";
+
     // ID for loader that loads related videos.
     private static final int RELATED_VIDEO_LOADER = 1;
 
@@ -94,6 +96,14 @@ public class VideoDetailsFragment extends DetailsFragment
     private FullWidthDetailsOverviewSharedElementHelper mHelper;
     private final VideoCursorMapper mVideoCursorMapper = new VideoCursorMapper();
 
+    public static VideoDetailsFragment newInstance(Video video) {
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_VIDEO, video);
+        VideoDetailsFragment frg = new VideoDetailsFragment();
+        frg.setArguments(args);
+        return frg;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +112,7 @@ public class VideoDetailsFragment extends DetailsFragment
         mVideoCursorAdapter = new CursorObjectAdapter(new CardPresenter());
         mVideoCursorAdapter.setMapper(mVideoCursorMapper);
 
-        mSelectedVideo = (Video) getActivity().getIntent()
-                .getParcelableExtra(VideoDetailsActivity.VIDEO);
+        mSelectedVideo = getArguments().getParcelable(ARG_VIDEO);
 
         if (mSelectedVideo != null || !hasGlobalSearchIntent()) {
             removeNotification(getActivity().getIntent()
@@ -186,11 +195,11 @@ public class VideoDetailsFragment extends DetailsFragment
         detailsPresenter.setInitialState(FullWidthDetailsOverviewRowPresenter.STATE_HALF);
 
         // Hook up transition element.
-        mHelper = new FullWidthDetailsOverviewSharedElementHelper();
-        mHelper.setSharedElementEnterTransition(getActivity(),
-                VideoDetailsActivity.SHARED_ELEMENT_NAME);
-        detailsPresenter.setListener(mHelper);
-        detailsPresenter.setParticipatingEntranceTransition(false);
+//        mHelper = new FullWidthDetailsOverviewSharedElementHelper();
+//        mHelper.setSharedElementEnterTransition(getActivity(),
+//                VideoDetailsActivity.SHARED_ELEMENT_NAME);
+//        detailsPresenter.setListener(mHelper);
+//        detailsPresenter.setParticipatingEntranceTransition(false);
         prepareEntranceTransition();
 
         detailsPresenter.setOnActionClickedListener(new OnActionClickedListener() {
